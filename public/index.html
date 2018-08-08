@@ -1,0 +1,42 @@
+<html>
+  <body>
+    <h1>Jason</h1>
+    status: <div id="status"></div><br/>
+    log: <div id="log"></div><br/>
+    chat: <div id="chat"></div><br/>
+    connected: <div id="connected"></div><br/>
+    <script>
+
+      const connected = document.getElementById('connected'),
+            log = document.getElementById('log'),
+            chat = document.getElementById('chat'),
+            state = document.getElementById('status');
+      let conn = {};
+
+      function openConnection() {
+        // uses global 'conn' object
+        if (conn.readyState === undefined || conn.readyState > 1) {
+          conn = new WebSocket('wss://jsonxr.local/webrtc/');
+          conn.onopen = function () {
+            state.className = 'success';
+            state.innerHTML = 'Socket open';
+            console.log('Socket open');
+            conn.send('hello from client');
+          };
+          conn.onmessage = function (event) {
+            // console.log(event.data);
+            const message = event.data; //JSON.parse(event.data);
+            chat.className = 'success';
+            chat.innerHTML = message;
+          };
+          conn.onclose = function (event) {
+            state.className = 'fail';
+            state.innerHTML = 'Socket closed';
+          };
+          
+        }
+      }
+      openConnection();
+      </script>
+  </body>
+</html>

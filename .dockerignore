@@ -7,4 +7,6 @@
 .prettierrc
 Dockerfile
 README.md
-k8s
+helm
+node_modules
+dist

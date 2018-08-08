@@ -19,22 +19,23 @@ spec:
         app: {{ template "k8s.name" . }}
         release: {{ .Release.Name }}
     spec:
+      volumes:
+      - name: {{ .Chart.Name }}-src
+        hostPath: 
+          path: /Users/jason/git/webrtc
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          #command: [ "sh", "-c", "ls /home/node" ]
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 3000
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          volumeMounts:
+            - name: {{ .Chart.Name }}-src
+              mountPath: /home/node/src
+              subPath: src
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
